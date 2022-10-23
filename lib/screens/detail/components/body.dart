@@ -1,8 +1,8 @@
 import 'package:al_igtisam/models/channel_info.dart';
 import 'package:al_igtisam/utils/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-
 import '../../../utils/constants.dart';
 
 class Body extends StatelessWidget {
@@ -39,7 +39,7 @@ class _SocialMediaState extends State<SocialMedia> {
         Row(
           children: [
             buildLinkContainer(instagramMobileUrl, instagramWebUrl,
-                "assets/images/instagram_gif.gif"),
+                "assets/images/instagram.svg"),
           ],
         )
       ],
@@ -60,12 +60,18 @@ class _SocialMediaState extends State<SocialMedia> {
           backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
         ),
         onPressed: () => _launcherInstagramUrl(mobileUrl, webUrl),
-        icon: Image.asset(
+        icon: SvgPicture.asset(
           iconPath,
           height: getProportionateScreenHeight(30),
           width: getProportionateScreenWidth(30),
-          fit: BoxFit.cover,
+          fit: BoxFit.fill,
         ),
+        // Image.asset(
+        //   iconPath,
+        //   height: getProportionateScreenHeight(30),
+        //   width: getProportionateScreenWidth(30),
+        //   fit: BoxFit.fill,
+        // ),
         // SvgPicture.asset(
         //   iconPath,
         //   fit: BoxFit.cover,

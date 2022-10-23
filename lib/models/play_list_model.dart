@@ -1,17 +1,24 @@
-class PlayListModel {
+class Playlists {
   String? kind;
   String? etag;
   String? nextPageToken;
+  String? prevPageToken;
   PageInfo? pageInfo;
   List<Items>? items;
 
-  PlayListModel(
-      {this.kind, this.etag, this.nextPageToken, this.pageInfo, this.items});
+  Playlists(
+      {this.kind,
+      this.etag,
+      this.nextPageToken,
+      this.prevPageToken,
+      this.pageInfo,
+      this.items});
 
-  PlayListModel.fromJson(Map<String, dynamic> json) {
+  Playlists.fromJson(Map<String, dynamic> json) {
     kind = json['kind'];
     etag = json['etag'];
     nextPageToken = json['nextPageToken'];
+    prevPageToken = json['prevPageToken'];
     pageInfo =
         json['pageInfo'] != null ? PageInfo.fromJson(json['pageInfo']) : null;
     if (json['items'] != null) {
@@ -27,6 +34,7 @@ class PlayListModel {
     data['kind'] = kind;
     data['etag'] = etag;
     data['nextPageToken'] = nextPageToken;
+    data['prevPageToken'] = prevPageToken;
     if (pageInfo != null) {
       data['pageInfo'] = pageInfo!.toJson();
     }
@@ -61,9 +69,8 @@ class Items {
   String? etag;
   String? id;
   Snippet? snippet;
-  ContentDetails? contentDetails;
 
-  Items({this.kind, this.etag, this.id, this.snippet, this.contentDetails});
+  Items({this.kind, this.etag, this.id, this.snippet});
 
   Items.fromJson(Map<String, dynamic> json) {
     kind = json['kind'];
@@ -71,9 +78,6 @@ class Items {
     id = json['id'];
     snippet =
         json['snippet'] != null ? Snippet.fromJson(json['snippet']) : null;
-    contentDetails = json['contentDetails'] != null
-        ? ContentDetails.fromJson(json['contentDetails'])
-        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -83,9 +87,6 @@ class Items {
     data['id'] = id;
     if (snippet != null) {
       data['snippet'] = snippet!.toJson();
-    }
-    if (contentDetails != null) {
-      data['contentDetails'] = contentDetails!.toJson();
     }
     return data;
   }
@@ -141,21 +142,21 @@ class Snippet {
 }
 
 class Thumbnails {
-  Default? small;
-  Default? medium;
-  Default? high;
-  Default? standard;
-  Default? maxres;
+  Small? small;
+  Small? medium;
+  Small? high;
+  Small? standard;
+  Small? maxres;
 
   Thumbnails({this.small, this.medium, this.high, this.standard, this.maxres});
 
   Thumbnails.fromJson(Map<String, dynamic> json) {
-    small = json['default'] != null ? Default.fromJson(json['default']) : null;
-    medium = json['medium'] != null ? Default.fromJson(json['medium']) : null;
-    high = json['high'] != null ? Default.fromJson(json['high']) : null;
+    small = json['default'] != null ? Small.fromJson(json['default']) : null;
+    medium = json['medium'] != null ? Small.fromJson(json['medium']) : null;
+    high = json['high'] != null ? Small.fromJson(json['high']) : null;
     standard =
-        json['standard'] != null ? Default.fromJson(json['standard']) : null;
-    maxres = json['maxres'] != null ? Default.fromJson(json['maxres']) : null;
+        json['standard'] != null ? Small.fromJson(json['standard']) : null;
+    maxres = json['maxres'] != null ? Small.fromJson(json['maxres']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -179,14 +180,14 @@ class Thumbnails {
   }
 }
 
-class Default {
+class Small {
   String? url;
   int? width;
   int? height;
 
-  Default({this.url, this.width, this.height});
+  Small({this.url, this.width, this.height});
 
-  Default.fromJson(Map<String, dynamic> json) {
+  Small.fromJson(Map<String, dynamic> json) {
     url = json['url'];
     width = json['width'];
     height = json['height'];
@@ -216,22 +217,6 @@ class Localized {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['title'] = title;
     data['description'] = description;
-    return data;
-  }
-}
-
-class ContentDetails {
-  int? itemCount;
-
-  ContentDetails({this.itemCount});
-
-  ContentDetails.fromJson(Map<String, dynamic> json) {
-    itemCount = json['itemCount'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['itemCount'] = itemCount;
     return data;
   }
 }

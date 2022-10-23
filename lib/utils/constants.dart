@@ -7,6 +7,7 @@ class Constants {
 }
 
 const BACKGROUND_COLOR = Color(0x00FF0000);
+
 const String instagramMobileUrl =
     "instagram://user?username=abdullah_kostekskiy";
 const String instagramWebUrl = "https://www.instagram.com/abdullah_kostekskiy";
