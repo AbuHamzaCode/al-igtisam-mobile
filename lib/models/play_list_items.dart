@@ -3,7 +3,7 @@ class PlayListItemsModel {
   String? etag;
   String? nextPageToken;
   String? prevPageToken;
-  List<Items>? items;
+  List<ItemsOfPlaylistItem>? items;
   PageInfo? pageInfo;
 
   PlayListItemsModel(
@@ -20,9 +20,9 @@ class PlayListItemsModel {
     nextPageToken = json['nextPageToken'];
     prevPageToken = json['prevPageToken'];
     if (json['items'] != null) {
-      items = <Items>[];
+      items = <ItemsOfPlaylistItem>[];
       json['items'].forEach((v) {
-        items!.add(Items.fromJson(v));
+        items!.add(ItemsOfPlaylistItem.fromJson(v));
       });
     }
     pageInfo =
@@ -45,16 +45,17 @@ class PlayListItemsModel {
   }
 }
 
-class Items {
+class ItemsOfPlaylistItem {
   String? kind;
   String? etag;
   String? id;
   Snippet? snippet;
   ContentDetails? contentDetails;
 
-  Items({this.kind, this.etag, this.id, this.snippet, this.contentDetails});
+  ItemsOfPlaylistItem(
+      {this.kind, this.etag, this.id, this.snippet, this.contentDetails});
 
-  Items.fromJson(Map<String, dynamic> json) {
+  ItemsOfPlaylistItem.fromJson(Map<String, dynamic> json) {
     kind = json['kind'];
     etag = json['etag'];
     id = json['id'];

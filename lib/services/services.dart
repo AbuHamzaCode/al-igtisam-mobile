@@ -31,11 +31,14 @@ class Services {
     }
   }
 
-  Future<Playlists?> getPlaylists({required String pageToken}) async {
+  Future<Playlists?> getPlaylists({String? pageToken}) async {
+    if (pageToken == null) {
+      return null;
+    }
     Map<String, dynamic> params = {
       'part': 'snippet',
       'channelId': Constants.CHANNEL_ID,
-      'maxResult': 8,
+      'maxResults': 8,
       'pageToken': pageToken,
       'key': Constants.API_KEY,
     };

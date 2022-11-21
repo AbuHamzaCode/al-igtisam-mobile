@@ -4,7 +4,7 @@ class Playlists {
   String? nextPageToken;
   String? prevPageToken;
   PageInfo? pageInfo;
-  List<Items>? items;
+  List<ItemsOfPlaylist>? items;
 
   Playlists(
       {this.kind,
@@ -22,9 +22,9 @@ class Playlists {
     pageInfo =
         json['pageInfo'] != null ? PageInfo.fromJson(json['pageInfo']) : null;
     if (json['items'] != null) {
-      items = <Items>[];
+      items = <ItemsOfPlaylist>[];
       json['items'].forEach((v) {
-        items!.add(Items.fromJson(v));
+        items!.add(ItemsOfPlaylist.fromJson(v));
       });
     }
   }
@@ -64,15 +64,15 @@ class PageInfo {
   }
 }
 
-class Items {
+class ItemsOfPlaylist {
   String? kind;
   String? etag;
   String? id;
   Snippet? snippet;
 
-  Items({this.kind, this.etag, this.id, this.snippet});
+  ItemsOfPlaylist({this.kind, this.etag, this.id, this.snippet});
 
-  Items.fromJson(Map<String, dynamic> json) {
+  ItemsOfPlaylist.fromJson(Map<String, dynamic> json) {
     kind = json['kind'];
     etag = json['etag'];
     id = json['id'];
