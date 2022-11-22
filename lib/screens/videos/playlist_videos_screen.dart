@@ -1,53 +1,48 @@
-import 'package:al_igtisam/models/play_list_model.dart';
-import 'package:al_igtisam/screens/widgets/list_item_card.dart';
-import 'package:al_igtisam/utils/size_config.dart';
+import 'package:al_igtisam/models/play_list_items.dart';
+import 'package:al_igtisam/screens/videos/video_player_screen.dart';
 import 'package:flutter/material.dart';
 
-import '../models/channel_info.dart';
-import '../services/services.dart';
-import 'videos/playlist_videos_screen.dart';
+import '../../services/services.dart';
+import '../../utils/size_config.dart';
+import '../widgets/list_item_card.dart';
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({Key? key}) : super(key: key);
+class PlaylistVideosScreen extends StatefulWidget {
+  PlaylistVideosScreen({
+    Key? key,
+    this.playlistId,
+    this.title,
+  }) : super(key: key);
+
+  var playlistId;
+  var title;
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  State<PlaylistVideosScreen> createState() => _PlaylistVideosScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
-  ChannelInfo? _channelInfo;
-  Playlists? _playlists;
+class _PlaylistVideosScreenState extends State<PlaylistVideosScreen> {
+  PlayListItemsModel? _playlistItems;
+  Services? services;
+  String? _nextPageToken;
   var isLoading = false;
   var hasMore = true;
-  String? _nextPageToken;
   final _scrollController = ScrollController();
 
-  Services? services;
-
-  _getChannelInfo() async {
-    _channelInfo = await services!.getChannelInfo();
-    debugPrint(
-        "${_channelInfo!.items![0].snippet!.title}      -> from screen ");
-    setState(() {
-      isLoading = false;
-    });
-  }
-
-  _loadPlaylists() async {
+  _loadPlaylistItems() async {
     if (isLoading) return;
     isLoading = true;
-    Playlists? tempPlaylists =
-        await services!.getPlaylists(pageToken: _nextPageToken);
+    PlayListItemsModel? tempPlaylistItems = await services!.getPlaylistItems(
+        playlistId: widget.playlistId, pageToken: _nextPageToken);
 
-    if (tempPlaylists != null) {
-      _nextPageToken = tempPlaylists.nextPageToken;
+    if (tempPlaylistItems != null) {
+      _nextPageToken = tempPlaylistItems.nextPageToken;
       setState(() {
         isLoading = false;
-        if (tempPlaylists.items!.length < 8) {
+        if (tempPlaylistItems.items!.length < 8) {
           hasMore = false;
         }
-        _playlists!.items!
-            .addAll(tempPlaylists.items as Iterable<ItemsOfPlaylist>);
+        _playlistItems!.items!
+            .addAll(tempPlaylistItems.items as Iterable<ItemsOfPlaylistItem>);
       });
     } else {
       setState(() {
@@ -61,26 +56,24 @@ class _MainScreenState extends State<MainScreen> {
       isLoading = false;
       hasMore = true;
       _nextPageToken = '';
-      _playlists!.items!.clear();
+      _playlistItems!.items!.clear();
     });
 
-    _loadPlaylists();
+    _loadPlaylistItems();
   }
 
   @override
   void initState() {
     super.initState();
-    _channelInfo = ChannelInfo();
-    _playlists = Playlists();
-    _playlists?.items = [];
+    _playlistItems = PlayListItemsModel();
+    _playlistItems?.items = [];
     services = Services();
     _nextPageToken = '';
-    _loadPlaylists();
-    _getChannelInfo();
+    _loadPlaylistItems();
     _scrollController.addListener(() {
       if (_scrollController.position.maxScrollExtent ==
           _scrollController.offset) {
-        _loadPlaylists();
+        _loadPlaylistItems();
       }
     });
   }
@@ -93,9 +86,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig.init(context);
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Column(
         children: [
           Container(
@@ -122,15 +113,27 @@ class _MainScreenState extends State<MainScreen> {
                         )),
                   ),
                 ),
-                const Positioned(
-                  top: 110,
+                Positioned(
+                  top: 100,
                   left: 25,
-                  child: Text(
-                    "Playlist",
-                    style: TextStyle(
-                      fontSize: 30,
-                      color: Colors.black87,
-                    ),
+                  child: SizedBox(
+                    height: getProportionateScreenHeight(70),
+                    width: getProportionateScreenWidth(190),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.title.length > 60
+                                ? "${widget.title.substring(0, 60)}..."
+                                : "${widget.title}",
+                            style: const TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ]),
                   ),
                 ),
                 Positioned(
@@ -142,33 +145,28 @@ class _MainScreenState extends State<MainScreen> {
                       Icons.arrow_left_rounded,
                       color: Colors.white70,
                     ),
-                    onPressed: () => {debugPrint("press back button")},
-                    // Navigator.of(context).pop(),
+                    onPressed: () => Navigator.of(context).pop(),
                   ),
                 ),
               ],
             ),
           ),
-          // SizedBox(
-          //   height: getProportionateScreenHeight(20),
-          // ),
           Expanded(
               child: RefreshIndicator(
             onRefresh: refresh,
             child: ListView.builder(
               controller: _scrollController,
-              itemCount: _playlists!.items!.length + 1,
+              itemCount: _playlistItems!.items!.length + 1,
               itemBuilder: (context, index) {
-                if (index < _playlists!.items!.length) {
-                  final item = _playlists?.items?[index];
+                if (index < _playlistItems!.items!.length) {
+                  final item = _playlistItems?.items?[index];
                   // debugPrint("${item?.id}");
                   return InkWell(
                     onTap: () async {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
-                        return PlaylistVideosScreen(
-                          playlistId: item?.id,
-                          title: item?.snippet?.title,
+                        return VideoPlayerScreen(
+                          videoItem: item,
                         );
                       }));
                     },

@@ -5,6 +5,8 @@ import 'package:dio/dio.dart';
 
 import 'package:flutter/cupertino.dart';
 
+import '../models/play_list_items.dart';
+
 class Services {
   final dio = Dio();
   final baseUrl = Constants.BASE_URL;
@@ -50,6 +52,33 @@ class Services {
     if (response.statusCode == 200) {
       data = Playlists.fromJson(response.data);
       debugPrint("$data");
+      return data;
+    } else {
+      debugPrint("${response.statusCode}");
+      return null;
+    }
+  }
+
+  Future<PlayListItemsModel?> getPlaylistItems(
+      {String? playlistId, String? pageToken}) async {
+    if (pageToken == null) {
+      return null;
+    }
+    Map<String, dynamic> params = {
+      'part': 'snippet,contentDetails',
+      'playlistId': playlistId,
+      'maxResults': 8,
+      'pageToken': pageToken,
+      'key': Constants.API_KEY,
+    };
+    PlayListItemsModel data;
+    var response = await dio.get('$baseUrl/youtube/v3/playlistItems',
+        queryParameters: params,
+        options: Options(validateStatus: (status) => true));
+
+    if (response.statusCode == 200) {
+      data = PlayListItemsModel.fromJson(response.data);
+      debugPrint("${data.items!.length}");
       return data;
     } else {
       debugPrint("${response.statusCode}");

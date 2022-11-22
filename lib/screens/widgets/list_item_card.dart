@@ -1,58 +1,107 @@
+import 'package:al_igtisam/utils/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-import '../../models/channel_info.dart';
-
-class ListItemCard extends StatelessWidget {
-  final ChannelInfo channelInfo;
-
-  const ListItemCard({
+class PlaylistItem extends StatelessWidget {
+  PlaylistItem({
     Key? key,
-    required this.channelInfo,
+    this.currentItem,
   }) : super(key: key);
 
-  // get title => channelInfo.items![0].snippet!.title;
+  final currentItem;
+  final formatter = DateFormat('yyyy-MM-dd hh:mm');
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Container(
-        // margin: const EdgeInsets.symmetric(vertical: 3.0),
-        padding: const EdgeInsets.all(5.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-                padding: const EdgeInsets.only(right: 5.0),
-                child: Image.network(
-                  '${channelInfo.items![0].snippet!.thumbnails!.medium!.url}',
-                  width: 90.0,
-                  height: 90.0,
-                )),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 3.0),
-                    child: Text(
-                      '${channelInfo.items![0].snippet!.title}',
-                      softWrap: true,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(top: 30.0),
-                    child: Text(
-                      "time and date",
-                      softWrap: true,
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
+    return SizedBox(
+      height: getProportionateScreenHeight(200),
+      child: Stack(
+        children: [
+          Positioned(
+            top: 20,
+            left: 15,
+            child: Material(
+              child: Container(
+                height: getProportionateScreenHeight(150),
+                width: getProportionateScreenWidth(340),
+                decoration: BoxDecoration(
+                  color: Colors.white70,
+                  borderRadius: BorderRadius.circular(5),
+                  boxShadow: [
+                    BoxShadow(
+                        color: const Color.fromARGB(255, 30, 27, 27)
+                            .withOpacity(0.3),
+                        offset: const Offset(-10.0, 10.0),
+                        blurRadius: 20.0,
+                        spreadRadius: 4.0),
+                  ],
+                ),
               ),
-            )
-          ],
-        ),
+            ),
+          ),
+          Positioned(
+            top: 0,
+            left: 25,
+            child: Card(
+              elevation: 10.0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              child: Container(
+                height: getProportionateScreenHeight(150),
+                width: getProportionateScreenWidth(130),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    boxShadow: [
+                      BoxShadow(
+                          color: const Color.fromARGB(255, 249, 247, 247)
+                              .withOpacity(0.3),
+                          offset: const Offset(-10.0, 10.0),
+                          blurRadius: 20.0,
+                          spreadRadius: 4.0),
+                    ],
+                    image: DecorationImage(
+                      image: NetworkImage(
+                          "${currentItem?.snippet?.thumbnails?.high?.url}"),
+                      fit: BoxFit.cover,
+                    )),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 31,
+            left: 167,
+            child: SizedBox(
+              height: getProportionateScreenHeight(130),
+              width: getProportionateScreenWidth(178),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "${currentItem?.snippet?.title}",
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    SizedBox(
+                      height: getProportionateScreenHeight(10),
+                    ),
+                    Text(
+                      formatter.format(DateTime.parse(
+                          '${currentItem?.snippet?.publishedAt}')),
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
+                      ),
+                    )
+                  ]),
+            ),
+          )
+        ],
       ),
     );
   }
