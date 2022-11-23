@@ -3,7 +3,6 @@ import 'package:al_igtisam/screens/widgets/list_item_card.dart';
 import 'package:al_igtisam/utils/size_config.dart';
 import 'package:flutter/material.dart';
 
-import '../models/channel_info.dart';
 import '../services/services.dart';
 import 'videos/playlist_videos_screen.dart';
 
@@ -15,7 +14,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  ChannelInfo? _channelInfo;
   Playlists? _playlists;
   var isLoading = false;
   var hasMore = true;
@@ -23,15 +21,6 @@ class _MainScreenState extends State<MainScreen> {
   final _scrollController = ScrollController();
 
   Services? services;
-
-  _getChannelInfo() async {
-    _channelInfo = await services!.getChannelInfo();
-    debugPrint(
-        "${_channelInfo!.items![0].snippet!.title}      -> from screen ");
-    setState(() {
-      isLoading = false;
-    });
-  }
 
   _loadPlaylists() async {
     if (isLoading) return;
@@ -70,13 +59,11 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    _channelInfo = ChannelInfo();
     _playlists = Playlists();
     _playlists?.items = [];
     services = Services();
     _nextPageToken = '';
     _loadPlaylists();
-    _getChannelInfo();
     _scrollController.addListener(() {
       if (_scrollController.position.maxScrollExtent ==
           _scrollController.offset) {

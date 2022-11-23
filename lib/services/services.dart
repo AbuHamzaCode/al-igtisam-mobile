@@ -1,5 +1,6 @@
 import 'package:al_igtisam/models/channel_info.dart';
 import 'package:al_igtisam/models/play_list_model.dart';
+import 'package:al_igtisam/models/video_model.dart';
 import 'package:al_igtisam/utils/constants.dart';
 import 'package:dio/dio.dart';
 
@@ -25,10 +26,10 @@ class Services {
     if (response.statusCode == 200) {
       data = ChannelInfo.fromJson(response.data);
 
-      debugPrint("${data.items![0].snippet!.title}        -> from service");
+      debugPrint("channel info success");
       return data;
     } else {
-      debugPrint("${response.statusCode}");
+      debugPrint("${response.data.error.message}");
       return null;
     }
   }
@@ -51,10 +52,10 @@ class Services {
 
     if (response.statusCode == 200) {
       data = Playlists.fromJson(response.data);
-      debugPrint("$data");
+      debugPrint("playlist success");
       return data;
     } else {
-      debugPrint("${response.statusCode}");
+      debugPrint("${response.data.error.message}");
       return null;
     }
   }
@@ -78,10 +79,34 @@ class Services {
 
     if (response.statusCode == 200) {
       data = PlayListItemsModel.fromJson(response.data);
-      debugPrint("${data.items!.length}");
+      debugPrint("playlist items success");
       return data;
     } else {
-      debugPrint("${response.statusCode}");
+      // debugPrint("${response.data[0].error.message}"); //some error need to check
+      return null;
+    }
+  }
+
+  Future<VideoModel?> getVideoDesc({String? videoId}) async {
+    if (videoId == null) {
+      return null;
+    }
+    Map<String, dynamic> params = {
+      'part': 'snippet,contentDetails,statistics',
+      'id': videoId,
+      'key': Constants.API_KEY,
+    };
+    VideoModel data;
+    var response = await dio.get('$baseUrl/youtube/v3/videos',
+        queryParameters: params,
+        options: Options(validateStatus: (status) => true));
+
+    if (response.statusCode == 200) {
+      data = VideoModel.fromJson(response.data);
+      debugPrint("video model success");
+      return data;
+    } else {
+      debugPrint("${response.data.error.message}");
       return null;
     }
   }

@@ -2,6 +2,8 @@ import 'package:al_igtisam/utils/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../utils/common.dart';
+
 class PlaylistItem extends StatelessWidget {
   PlaylistItem({
     Key? key,
@@ -90,8 +92,9 @@ class PlaylistItem extends StatelessWidget {
                       height: getProportionateScreenHeight(10),
                     ),
                     Text(
-                      formatter.format(DateTime.parse(
-                          '${currentItem?.snippet?.publishedAt}')),
+                      "${getDateFormat(currentItem?.snippet?.publishedAt)}",
+                      // formatter.format(DateTime.parse(
+                      //     '${currentItem?.snippet?.publishedAt}')),
                       style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,

@@ -11,8 +11,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
+      // theme: ThemeData(
+      //   fontFamily: 'Amita',
+      // ),
       debugShowCheckedModeBanner: false,
-      // theme: ThemeData(primaryColor: Colors.black),
       home: MainScreen(),
     );
   }
