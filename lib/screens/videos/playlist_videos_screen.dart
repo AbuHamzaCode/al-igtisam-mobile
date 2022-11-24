@@ -167,7 +167,7 @@ class _PlaylistVideosScreenState extends State<PlaylistVideosScreen> {
                           MaterialPageRoute(builder: (context) {
                         return VideoPlayerScreen(
                           videoItem: item,
-                          // playlistId: widget.playlistId,
+                          playListId: widget.playlistId,
                         );
                       }));
                     },

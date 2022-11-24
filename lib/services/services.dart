@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 
 import 'package:flutter/cupertino.dart';
 
+import '../models/error_model.dart';
 import '../models/play_list_items.dart';
 
 class Services {
@@ -82,7 +83,8 @@ class Services {
       debugPrint("playlist items success");
       return data;
     } else {
-      // debugPrint("${response.data[0].error.message}"); //some error need to check
+      debugPrint(
+          "${ErrorModel.fromJson(response.data).error?.message}  ——— error message"); //some error need to check
       return null;
     }
   }

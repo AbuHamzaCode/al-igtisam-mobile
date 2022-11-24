@@ -93,8 +93,6 @@ class PlaylistItem extends StatelessWidget {
                     ),
                     Text(
                       "${getDateFormat(currentItem?.snippet?.publishedAt)}",
-                      // formatter.format(DateTime.parse(
-                      //     '${currentItem?.snippet?.publishedAt}')),
                       style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
