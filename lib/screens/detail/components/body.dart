@@ -33,7 +33,7 @@ class _SocialMediaState extends State<SocialMedia> {
           width: getProportionateScreenWidth(400),
           child: AspectRatio(
             aspectRatio: 1,
-            child: Image.asset("assets/images/al igtisam.jpeg"),
+            child: Image.asset("assets/images/al-igtisam_png.png"),
           ),
         ),
         Row(

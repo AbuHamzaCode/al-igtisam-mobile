@@ -2,8 +2,6 @@ import 'package:al_igtisam/models/video_model.dart';
 import 'package:al_igtisam/services/services.dart';
 import 'package:al_igtisam/utils/size_config.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-// import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../../models/channel_info.dart';
@@ -26,7 +24,6 @@ class VideoPlayerScreen extends StatefulWidget {
 }
 
 class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
-  // late YoutubePlayerController _ytbPlayerController;
   late YoutubePlayerController _controller;
   var _isPlayerReady = false;
   var services = Services();
@@ -41,9 +38,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   var isLiked = false;
   var hasMore = true;
   var fullScreen = false;
+
   _getVideoDescription({String? id}) async {
-    // if (isLoading) return;
-    // isLoading = true;
     var videoInfoTemp = await services.getVideoDesc(videoId: id);
     debugPrint("$id     -> video title ");
     if (videoInfoTemp != null) {
@@ -107,32 +103,16 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     _playlistItems?.items = [];
     _nextPageToken = '';
     videoTitle = 'loading...';
-    // debugPrint("${widget.playListId} ———— playlist id");
+
     _controller = YoutubePlayerController(
       initialVideoId: widget.videoItem.contentDetails.videoId,
       flags: const YoutubePlayerFlags(
         mute: false,
         loop: false,
-        autoPlay: false, //fix to "true" after complete this page
+        autoPlay: true,
       ),
     )..addListener(_listener);
-    _setOrientation([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
 
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   setState(() {
-    //     _ytbPlayerController = Youtub(
-    //       initialVideoId: widget.videoItem.contentDetails.videoId,
-    //       params: const YoutubePlayerParams(
-    //         showFullscreenButton: true,
-    //       ),
-    //     );
-    //   });
-    // });
     _scrollController.addListener(() {
       if (_scrollController.position.maxScrollExtent ==
           _scrollController.offset) {
@@ -149,37 +129,21 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       debugPrint("inside");
       //
     }
-    // if (_controller.value.isFullScreen) {
     setState(() {
       fullScreen = _controller.value.isFullScreen;
     });
-    // }
+    // if (_controller.value.isFullScreen) {}
   }
 
-  // @override
-  // void didUpdateWidget(covariant VideoPlayerScreen oldWidget) {
-  //   if (oldWidget.videoItem != null) {
-  //   }
-  //   if (isLoading) {
-  //     _getChannelInfo();
-  //   }
-  //   super.didUpdateWidget(oldWidget);
-  // }
-
-  // @override
-  // void deactivate() {
-  //   _controller?.pause();
-  //   super.deactivate();
-  // }
+  @override
+  void deactivate() {
+    _controller.pause();
+    super.deactivate();
+  }
 
   @override
   void dispose() {
-    // _setOrientation([
-    //   DeviceOrientation.portraitUp,
-    //   DeviceOrientation.portraitDown,
-    // ]);
     _controller.dispose();
-    // _ytbPlayerController.close();
     _scrollController.dispose();
     super.dispose();
   }
@@ -210,7 +174,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                     child: YoutubePlayer(
                   controller: _controller,
                   showVideoProgressIndicator: true,
-                  progressIndicatorColor: Colors.black87,
                   onReady: () {
                     _isPlayerReady = true;
                   },
@@ -337,6 +300,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                             onTap: () async {
                               _getVideoDescription(
                                   id: item?.contentDetails?.videoId);
+                              _controller
+                                  .load("${item?.contentDetails?.videoId}");
                             },
                             child: VideoItemCard(videoItem: item));
                       } else {
@@ -357,19 +322,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     );
   }
 
-  _setOrientation(List<DeviceOrientation> orientations) {
-    SystemChrome.setPreferredOrientations(orientations);
-  }
-
-  // _buildYtbView() {
-  //   return AspectRatio(
-  //     aspectRatio: 16 / 9,
-  //     child: _ytbPlayerController != null
-  //         ? YoutubePlayer(controller: _ytbPlayerController)
-  //         : const Center(child: CircularProgressIndicator()),
-  //   );
-  // }
-
   SizedBox buildAvatarTitle() {
     return SizedBox(
       height: getProportionateScreenHeight(60),
@@ -388,9 +340,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                 width: getProportionateScreenWidth(10),
               ),
               CircleAvatar(
-                backgroundImage: NetworkImage(
-                    videoInfo?.items?[0].snippet?.thumbnails?.medium?.url ??
-                        " "),
+                backgroundColor: Colors.grey[300],
+                backgroundImage: videoInfo != null
+                    ? NetworkImage(
+                        "${videoInfo?.items?[0].snippet?.thumbnails?.medium?.url}")
+                    : null,
               ),
               SizedBox(
                 width: getProportionateScreenWidth(10),
